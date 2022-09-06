@@ -1,7 +1,7 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Permission, PermissionDocument } from './schemas/permission.schems';
+import { Permission, PermissionDocument } from './schemas/permission.schema';
 import { CreatePermissionDto } from './dtos/create-permission.dto';
 import { UpdatePermissionDto } from './dtos/update-permission.dto';
 
@@ -29,12 +29,11 @@ export class PermissionService {
         } catch (error) {
             throw new BadRequestException(error.message);
         }
-
     }
 
     async create(createPermissionDto: CreatePermissionDto): Promise<Permission>  {
-        const createdUnit = new this.permissionModel(createPermissionDto);
-        return createdUnit.save();
+        const createdPermission = new this.permissionModel(createPermissionDto);
+        return createdPermission.save();
     }
 
     async update(id: string, updatePermissionDto: UpdatePermissionDto): Promise<Permission>  {

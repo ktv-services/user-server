@@ -1,0 +1,20 @@
+import { IsDate, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { Permission } from '../../permission/schemas/permission.schema';
+
+export class UpdateRoleDto {
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(3)
+    name: string;
+
+    @IsString()
+    @IsNotEmpty()
+    status: string;
+
+    permissions: Permission[];
+
+    @IsDate()
+    @Type(() => Date)
+    updated: Date;
+}
