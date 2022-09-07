@@ -11,8 +11,8 @@ export class RoleController {
     @Get()
     async findAll(@Res() response): Promise<Role[]> {
         try {
-            const permissions = await this.roleService.findAll();
-            return response.status(HttpStatus.OK).json({permissions: permissions});
+            const roles = await this.roleService.findAll();
+            return response.status(HttpStatus.OK).json({roles: roles});
         } catch (err) {
             return response.status(err.status).json(err.response);
         }
@@ -21,8 +21,8 @@ export class RoleController {
     @Get(':id')
     async findOne(@Res() response, @Param('id') id: string): Promise<Role> {
         try {
-            const permission = await this.roleService.findOne(id);
-            return response.status(HttpStatus.OK).json({permission: permission});
+            const role = await this.roleService.findOne(id);
+            return response.status(HttpStatus.OK).json({role: role});
         } catch (err) {
             return response.status(err.status).json(err.response);
         }
@@ -31,8 +31,8 @@ export class RoleController {
     @Post()
     async create(@Res() response, @Body() createRoleDto: CreateRoleDto) {
         try {
-            const permission = await this.roleService.create(createRoleDto);
-            return response.status(HttpStatus.CREATED).json({permission: permission});
+            const role = await this.roleService.create(createRoleDto);
+            return response.status(HttpStatus.CREATED).json({role: role});
         } catch (err) {
             return response.status(err.status).json(err.response);
         }
@@ -41,8 +41,8 @@ export class RoleController {
     @Put(':id')
     async update(@Res() response, @Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
         try {
-            const permission = await this.roleService.update(id, updateRoleDto);
-            return response.status(HttpStatus.OK).json({permission: permission});
+            const role = await this.roleService.update(id, updateRoleDto);
+            return response.status(HttpStatus.OK).json({role: role});
         } catch (err) {
             return response.status(err.status).json(err.response);
         }
@@ -51,8 +51,8 @@ export class RoleController {
     @Delete(':id')
     async remove(@Res() response, @Param('id') id: string) {
         try {
-            const permission = await this.roleService.delete(id);
-            return response.status(HttpStatus.OK).json({permission: permission});
+            const role = await this.roleService.delete(id);
+            return response.status(HttpStatus.OK).json({role: role});
         } catch (err) {
             return response.status(err.status).json(err.response);
         }
