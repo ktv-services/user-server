@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateRoleDto } from '../role/dtos/create-role.dto';
-import { UpdateRoleDto } from '../role/dtos/update-role.dto';
 import { User } from './schemas/user.schema';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -28,21 +28,21 @@ export class UserController {
         }
     }
 
-    /*@Post()
-    async create(@Res() response, @Body() createRoleDto: CreateRoleDto) {
+    @Post()
+    async create(@Res() response, @Body() createUserDto: CreateUserDto) {
         try {
-            const permission = await this.roleService.create(createRoleDto);
-            return response.status(HttpStatus.CREATED).json({permission: permission});
+            const user = await this.userService.create(createUserDto);
+            return response.status(HttpStatus.CREATED).json({user: user});
         } catch (err) {
             return response.status(err.status).json(err.response);
         }
     }
 
     @Put(':id')
-    async update(@Res() response, @Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
+    async update(@Res() response, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
         try {
-            const permission = await this.roleService.update(id, updateRoleDto);
-            return response.status(HttpStatus.OK).json({permission: permission});
+            const user = await this.userService.update(id, updateUserDto);
+            return response.status(HttpStatus.OK).json({user: user});
         } catch (err) {
             return response.status(err.status).json(err.response);
         }
@@ -51,10 +51,10 @@ export class UserController {
     @Delete(':id')
     async remove(@Res() response, @Param('id') id: string) {
         try {
-            const permission = await this.roleService.delete(id);
-            return response.status(HttpStatus.OK).json({permission: permission});
+            const user = await this.userService.delete(id);
+            return response.status(HttpStatus.OK).json({user: user});
         } catch (err) {
             return response.status(err.status).json(err.response);
         }
-    }*/
+    }
 }
