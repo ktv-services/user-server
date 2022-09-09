@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { UserServiceModule } from './user-service/user-service.module';
+
 
 @Module({
-  imports: [],
+  imports: [
+      MongooseModule.forRoot('mongodb+srv://tkuku:Messi911@userservice.5gbk9dq.mongodb.net/?retryWrites=true&w=majority'),
+      UserServiceModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
