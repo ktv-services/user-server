@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from './schemas/user.schema';
+import { User, UserDocument } from '../schemas/user.schema';
 import { Model } from 'mongoose';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
+import { CreateUserDto } from '../dtos/create-user.dto';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -32,9 +32,14 @@ export class UserService {
     }
 
     async create(createUserDto: CreateUserDto): Promise<User>  {
-        const createdUser = new this.userModel(createUserDto);
-        const user = await createdUser.save();
-        return await this.userModel.findById(user._id).populate('role').populate('token').populate('socials').exec();
+        try {
+            const createdUser = new this.userModel(createUserDto);
+            const user = await createdUser.save();
+            return await this.userModel.findById(user._id).populate('role').populate('token').populate('socials').exec();
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
+
     }
 
     async update(id: string, updateUserDto: UpdateUserDto): Promise<User>  {
@@ -52,4 +57,5 @@ export class UserService {
         }
         return this.userModel.findByIdAndDelete(id).populate('role').populate('token').populate('socials');
     }
+
 }

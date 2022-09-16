@@ -5,6 +5,11 @@ import { Token } from '../schemas/token.schema';
 import { SocialUser } from '../schemas/social-user.schema';
 
 export class UpdateUserDto {
+    @IsString()
+    _id?: string;
+
+    password?: string;
+
     @IsEmail()
     @IsString()
     @IsNotEmpty()
