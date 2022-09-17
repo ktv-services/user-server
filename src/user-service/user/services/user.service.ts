@@ -47,7 +47,7 @@ export class UserService {
         if (!user) {
             throw new NotFoundException(`User id:${id} not found`);
         }
-        return this.userModel.findByIdAndUpdate(id, updateUserDto, {new: true}).populate('role').populate('token').populate('socials');
+        return this.userModel.findByIdAndUpdate(id, updateUserDto, {new: true}).populate('role').populate('token').populate('socials').exec();
     }
 
     async delete(id: string): Promise<User> {

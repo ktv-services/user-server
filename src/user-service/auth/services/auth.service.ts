@@ -3,7 +3,7 @@ import { User, UserDocument } from '../../user/schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AuthTypesEnum } from '../enums/auth-types.enum';
-import { UpdateUserDto } from "../../user/dtos/update-user.dto";
+import { UpdateUserDto } from '../../user/dtos/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,23 +21,31 @@ export class AuthService {
         return !(currentTime > blockTime.getTime());
     };
 
-    async blockUser(user: User): Promise<void> {
-        const blockAccountTime = 5;
+    async setWrong(user: UpdateUserDto): Promise<User> {
         user.wrong = user.wrong + 1;
-        user.blockTime = await this.addMinutesToDate(new Date(), blockAccountTime);
+        if (user.wrong === 5) {
+            await this.blockUser(user);
+            throw new Error('User was blocked on 5 min');
+        }
         user.updated = new Date();
-        this.userModel.updateOne(user);
+        return this.userModel.findByIdAndUpdate(user._id, user);
+    }
+
+    async blockUser(user: UpdateUserDto): Promise<void> {
+        const blockAccountTime = 5;
+        user.blockTime = await this.addMinutesToDate(new Date(), blockAccountTime);
+        return this.userModel.findByIdAndUpdate(user._id, user);
     }
 
     async addMinutesToDate(date, minutes): Promise<Date> {
         return new Date(date.getTime() + minutes * 60000);
     }
 
-    async unBlock(user: User): Promise<void> {
+    async unBlock(user: UpdateUserDto): Promise<void> {
         user.wrong = 0;
         user.blockTime = null;
         user.updated = new Date();
-        await this.userModel.updateOne(user);
+        return this.userModel.findByIdAndUpdate(user._id, user);
     }
 
     async checkAdminAccess(type: string, role: string): Promise<void> {
@@ -45,17 +53,4 @@ export class AuthService {
             throw new Error('User does not have permission level!');
         }
     };
-
-    async encreaseAttemp(user: User): Promise<void> {
-        if (user.wrong === 5) {
-            user.wrong = 1;
-            user.blockTime = null;
-        } else {
-            user.wrong = user.wrong + 1;
-        }
-        user.updated = new Date();
-        await this.userModel.updateOne(user);
-    }
-
-
 }

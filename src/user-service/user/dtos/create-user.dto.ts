@@ -27,9 +27,9 @@ export class CreateUserDto {
 
     @IsDate()
     @Type(() => Date)
-    created: Date;
+    created: Date = new Date();
 
     @IsDate()
     @Type(() => Date)
-    updated: Date;
+    updated: Date = new Date();
 }
