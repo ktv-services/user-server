@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PermissionController } from './permission.controller';
-import { PermissionService } from './permission.service';
+import { PermissionService } from '../services/permission.service';
 
 describe('AuthController', () => {
     let appController: PermissionController;

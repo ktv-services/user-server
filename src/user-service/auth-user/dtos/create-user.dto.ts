@@ -5,6 +5,8 @@ import { Token } from '../schemas/token.schema';
 import { SocialUser } from "../schemas/social-user.schema";
 
 export class CreateUserDto {
+    _id?: string;
+
     @IsEmail()
     @IsString()
     @IsNotEmpty()

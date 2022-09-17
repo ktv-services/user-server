@@ -6,8 +6,8 @@ const bcrypt = require('bcrypt');
 @Injectable()
 export class PasswordService {
     async hashPassword(password: string): Promise<string> {
-        const saltRound = '10';
-        const salt = bcrypt.genSaltSync(parseInt(saltRound));
+        const saltRound: string = '10';
+        const salt: string = bcrypt.genSaltSync(parseInt(saltRound));
         return bcrypt.hashSync(password, salt);
     }
 

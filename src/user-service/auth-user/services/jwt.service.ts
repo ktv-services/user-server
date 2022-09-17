@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 /* eslint @typescript-eslint/no-var-requires: "off" */
 // tslint:disable-next-line:no-var-requires
 const jwt = require('json-web-token');
-import { UpdateUserDto } from "../../user/dtos/update-user.dto";
+import { UpdateUserDto } from "../dtos/update-user.dto";
 
 @Injectable()
 export class JwtService {
     private secret: string = 'jds78a4ac4a4m8mc84mcm84mc48mc48';
 
     async createToken(user: UpdateUserDto): Promise<string> {
-        const timeDay = 86400000;
-        const payload = {
+        const timeDay: number = 86400000;
+        const payload: any = {
             id: user._id,
             email: user.email,
             role: user.role.name,

@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, Res, HttpStatus } from '@nestjs/common';
-import { Role } from './schemas/role.schema';
-import { CreateRoleDto } from './dtos/create-role.dto';
-import { UpdateRoleDto } from './dtos/update-role.dto';
-import { RoleService } from './role.service';
+import { Role } from '../schemas/role.schema';
+import { CreateRoleDto } from '../dtos/create-role.dto';
+import { UpdateRoleDto } from '../dtos/update-role.dto';
+import { RoleService } from '../services/role.service';
 
 @Controller('roles')
 export class RoleController {
@@ -11,7 +11,7 @@ export class RoleController {
     @Get()
     async findAll(@Res() response): Promise<Role[]> {
         try {
-            const roles = await this.roleService.findAll();
+            const roles: Role[] = await this.roleService.findAll();
             return response.status(HttpStatus.OK).json({roles: roles});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -21,7 +21,7 @@ export class RoleController {
     @Get(':id')
     async findOne(@Res() response, @Param('id') id: string): Promise<Role> {
         try {
-            const role = await this.roleService.findOne(id);
+            const role: Role = await this.roleService.findOne(id);
             return response.status(HttpStatus.OK).json({role: role});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -29,9 +29,9 @@ export class RoleController {
     }
 
     @Post()
-    async create(@Res() response, @Body() createRoleDto: CreateRoleDto) {
+    async create(@Res() response, @Body() createRoleDto: CreateRoleDto): Promise<Role> {
         try {
-            const role = await this.roleService.create(createRoleDto);
+            const role: Role = await this.roleService.create(createRoleDto);
             return response.status(HttpStatus.CREATED).json({role: role});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -39,7 +39,7 @@ export class RoleController {
     }
 
     @Put(':id')
-    async update(@Res() response, @Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
+    async update(@Res() response, @Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto): Promise<Role> {
         try {
             const role = await this.roleService.update(id, updateRoleDto);
             return response.status(HttpStatus.OK).json({role: role});
@@ -49,9 +49,9 @@ export class RoleController {
     }
 
     @Delete(':id')
-    async remove(@Res() response, @Param('id') id: string) {
+    async remove(@Res() response, @Param('id') id: string): Promise<Role> {
         try {
-            const role = await this.roleService.delete(id);
+            const role: Role = await this.roleService.delete(id);
             return response.status(HttpStatus.OK).json({role: role});
         } catch (err) {
             return response.status(err.status).json(err.response);

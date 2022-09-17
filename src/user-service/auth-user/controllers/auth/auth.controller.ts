@@ -1,13 +1,14 @@
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
-import { AuthService } from './services/auth.service';
-import { SignInUserDto } from './dtos/signin-user.dto';
-import { PasswordService } from './services/password.service';
-import { JwtService } from './services/jwt.service';
-import { TokenService } from '../user/services/token.service';
-import { CreateTokenDto } from '../user/dtos/create-token.dto';
-import { Status } from './enums/statuses.enum';
-import { UserService } from '../user/services/user.service';
-import {UpdateUserDto} from "../user/dtos/update-user.dto";
+import { AuthService } from '../../services/auth.service';
+import { SignInUserDto } from '../../dtos/signin-user.dto';
+import { PasswordService } from '../../services/password.service';
+import { JwtService } from '../../services/jwt.service';
+import { TokenService } from '../../services/token.service';
+import { CreateTokenDto } from '../../dtos/create-token.dto';
+import { Status } from '../../enums/statuses.enum';
+import { UserService } from '../../services/user.service';
+import {UpdateUserDto} from "../../dtos/update-user.dto";
+import {User} from "../../schemas/user.schema";
 
 @Controller('auth')
 export class AuthController {
@@ -20,9 +21,9 @@ export class AuthController {
     ) {}
 
     @Post('/signin')
-    async signIn(@Res() response, @Body() signInUserDto: SignInUserDto) {
+    async signIn(@Res() response, @Body() signInUserDto: SignInUserDto): Promise<any> {
         try {
-            const user = await this.authService.findAByEmail(signInUserDto.email);
+            const user: UpdateUserDto = await this.authService.findAByEmail(signInUserDto.email);
             if (typeof user === 'undefined') {
                 throw new Error('Wrong email or password');
             }
@@ -34,7 +35,7 @@ export class AuthController {
                    await this.authService.unBlock(user);
                }
                await this.authService.checkAdminAccess(signInUserDto.type, user.role.name);
-               const tokenHash = await this.jwtService.createToken(user);
+               const tokenHash: string = await this.jwtService.createToken(user);
                if (typeof user.token !== 'undefined') {
                    await this.tokenService.removeTokenEntry(user.token.hash);
                }

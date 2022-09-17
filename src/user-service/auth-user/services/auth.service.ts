@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { User, UserDocument } from '../../user/schemas/user.schema';
+import { User, UserDocument } from '../schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AuthTypesEnum } from '../enums/auth-types.enum';
-import { UpdateUserDto } from '../../user/dtos/update-user.dto';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,12 +12,12 @@ export class AuthService {
     ) {}
 
     async findAByEmail(email: string): Promise<UpdateUserDto>  {
-        const users = await this.userModel.find({ email }).populate('role').populate('token').populate('socials').exec();
+        const users: User[] = await this.userModel.find({ email }).populate('role').populate('token').populate('socials').exec();
         return users[0];
     }
 
     async checkBlockTime(blockTime: Date): Promise<boolean> {
-        const currentTime = new Date().getTime();
+        const currentTime: number = new Date().getTime();
         return !(currentTime > blockTime.getTime());
     };
 
@@ -32,7 +32,7 @@ export class AuthService {
     }
 
     async blockUser(user: UpdateUserDto): Promise<void> {
-        const blockAccountTime = 5;
+        const blockAccountTime: number = 5;
         user.blockTime = await this.addMinutesToDate(new Date(), blockAccountTime);
         return this.userModel.findByIdAndUpdate(user._id, user);
     }

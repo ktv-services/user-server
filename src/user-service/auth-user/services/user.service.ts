@@ -12,7 +12,7 @@ export class UserService {
     ) {}
 
     async findAll(): Promise<User[]>  {
-        const users = await this.userModel.find().populate('role').populate('token').populate('socials').exec();
+        const users: User[] = await this.userModel.find().populate('role').populate('token').populate('socials').exec();
         if (!users || users.length == 0) {
             throw new NotFoundException('Users data not found!');
         }
@@ -21,7 +21,7 @@ export class UserService {
 
     async findOne(id: string): Promise<User>  {
         try {
-            const user = await this.userModel.findById(id).populate('role').populate('token').populate('socials').exec();
+            const user: User = await this.userModel.findById(id).populate('role').populate('token').populate('socials').exec();
             if (!user) {
                 throw new NotFoundException(`User id:${id} not found`);
             }
@@ -33,8 +33,8 @@ export class UserService {
 
     async create(createUserDto: CreateUserDto): Promise<User>  {
         try {
-            const createdUser = new this.userModel(createUserDto);
-            const user = await createdUser.save();
+            const createdUser: any = new this.userModel(createUserDto);
+            const user: CreateUserDto = await createdUser.save();
             return await this.userModel.findById(user._id).populate('role').populate('token').populate('socials').exec();
         } catch (error) {
             throw new BadRequestException(error.message);
@@ -43,7 +43,7 @@ export class UserService {
     }
 
     async update(id: string, updateUserDto: UpdateUserDto): Promise<User>  {
-        const user = await this.userModel.findById(id).exec();
+        const user: User = await this.userModel.findById(id).exec();
         if (!user) {
             throw new NotFoundException(`User id:${id} not found`);
         }
@@ -51,7 +51,7 @@ export class UserService {
     }
 
     async delete(id: string): Promise<User> {
-        const user = await this.userModel.findById(id).exec();
+        const user: User = await this.userModel.findById(id).exec();
         if (!user) {
             throw new NotFoundException(`User id:${id} not found`);
         }

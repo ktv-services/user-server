@@ -15,8 +15,8 @@ export class TokenService {
     }
 
     async create(createTokenDto: CreateTokenDto): Promise<Token>  {
-        const createdToken = new this.tokenModel(createTokenDto);
-        const token = await createdToken.save();
+        const createdToken: any = new this.tokenModel(createTokenDto);
+        const token: CreateTokenDto = await createdToken.save();
         return await this.tokenModel.findById(token._id).exec();
     }
 }
