@@ -3,6 +3,8 @@ import { Type } from 'class-transformer';
 import { Permission } from '../../permission/schemas/permission.schema';
 
 export class CreateRoleDto {
+    _id?: string;
+
     @IsString()
     @IsNotEmpty()
     @MinLength(3)

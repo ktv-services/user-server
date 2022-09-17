@@ -5,6 +5,8 @@ import { Token } from '../schemas/token.schema';
 import { SocialUser } from "../schemas/social-user.schema";
 
 export class CreateUserDto {
+    _id?: string;
+
     @IsEmail()
     @IsString()
     @IsNotEmpty()
@@ -27,9 +29,9 @@ export class CreateUserDto {
 
     @IsDate()
     @Type(() => Date)
-    created: Date;
+    created: Date = new Date();
 
     @IsDate()
     @Type(() => Date)
-    updated: Date;
+    updated: Date = new Date();
 }

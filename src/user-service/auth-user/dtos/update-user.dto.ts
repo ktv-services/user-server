@@ -5,6 +5,11 @@ import { Token } from '../schemas/token.schema';
 import { SocialUser } from '../schemas/social-user.schema';
 
 export class UpdateUserDto {
+    _id?: string;
+    password?: string;
+    wrong?: number;
+    blockTime?: Date;
+
     @IsEmail()
     @IsString()
     @IsNotEmpty()
@@ -23,5 +28,5 @@ export class UpdateUserDto {
 
     @IsDate()
     @Type(() => Date)
-    updated: Date;
+    updated: Date = new Date();
 }

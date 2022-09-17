@@ -33,10 +33,10 @@ export class User {
     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SocialUser' }] })
     socials: SocialUser[];
 
-    @Prop({type: 'Date'})
+    @Prop({type: 'Date', default: Date.now})
     created: Date;
 
-    @Prop({type: 'Date'})
+    @Prop({type: 'Date', default: Date.now})
     updated: Date;
 }
 
