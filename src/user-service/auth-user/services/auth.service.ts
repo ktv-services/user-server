@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import { User, UserDocument } from '../schemas/user.schema';
+import { SocialUser, SocialUserDocument } from '../schemas/social-user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AuthTypesEnum } from '../enums/auth-types.enum';
@@ -9,11 +10,17 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 export class AuthService {
     constructor(
         @InjectModel(User.name) private userModel: Model<UserDocument>,
+        @InjectModel(SocialUser.name) private socialUserModel: Model<SocialUserDocument>,
     ) {}
 
     async findAByEmail(email: string): Promise<UpdateUserDto>  {
         const users: User[] = await this.userModel.find({ email }).populate('role').populate('token').populate('socials').exec();
         return users[0];
+    }
+
+    async findSocialById(id: string): Promise<SocialUser>  {
+        const socialUsers: SocialUser[] = await this.socialUserModel.find({ id }).exec();
+        return socialUsers[0];
     }
 
     async checkBlockTime(blockTime: Date): Promise<boolean> {

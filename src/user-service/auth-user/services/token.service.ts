@@ -10,8 +10,11 @@ export class TokenService {
         @InjectModel(Token.name) private tokenModel: Model<TokenDocument>,
     ) {}
 
-    async removeTokenEntry (id: string): Promise<void> {
-        this.tokenModel.findByIdAndRemove(id);
+    async removeTokenEntry (hash: string): Promise<void> {
+        const token: CreateTokenDto[] = await this.tokenModel.find({ hash }).exec();
+        if (token[0]) {
+            this.tokenModel.findByIdAndRemove(token[0]._id);
+        }
     }
 
     async create(createTokenDto: CreateTokenDto): Promise<Token>  {
