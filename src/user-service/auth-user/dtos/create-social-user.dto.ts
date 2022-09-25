@@ -13,7 +13,7 @@ export class CreateSocialUserDto {
     @IsString()
     @IsNotEmpty()
     @MinLength(3)
-    firstname: string;
+    firstName: string;
 
     @IsString()
     @IsNotEmpty()
@@ -26,9 +26,7 @@ export class CreateSocialUserDto {
     @IsString()
     provider: string;
 
-    @IsString()
-    @IsNotEmpty()
-    status: string;
+    status?: string;
 
     @IsDate()
     @Type(() => Date)

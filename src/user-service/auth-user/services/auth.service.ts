@@ -1,10 +1,11 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { User, UserDocument } from '../schemas/user.schema';
 import { SocialUser, SocialUserDocument } from '../schemas/social-user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AuthTypesEnum } from '../enums/auth-types.enum';
 import { UpdateUserDto } from '../dtos/update-user.dto';
+import { CreateSocialUserDto } from '../dtos/create-social-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +22,16 @@ export class AuthService {
     async findSocialById(id: string): Promise<SocialUser>  {
         const socialUsers: SocialUser[] = await this.socialUserModel.find({ id }).exec();
         return socialUsers[0];
+    }
+
+    async createSocialUser(createSocialUserDto: CreateSocialUserDto): Promise<SocialUser> {
+        try {
+            const createdSocialUser: any = new this.socialUserModel(createSocialUserDto);
+            const socialUser: CreateSocialUserDto = await createdSocialUser.save();
+            return await this.findSocialById(socialUser.id);
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
     }
 
     async checkBlockTime(blockTime: Date): Promise<boolean> {

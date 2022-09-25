@@ -8,7 +8,10 @@ import { CreateTokenDto } from '../../dtos/create-token.dto';
 import { Status } from '../../enums/statuses.enum';
 import { UserService } from '../../services/user.service';
 import { UpdateUserDto } from '../../dtos/update-user.dto';
-import {CreateSocialUserDto} from "../../dtos/create-social-user.dto";
+import { CreateSocialUserDto } from '../../dtos/create-social-user.dto';
+import { RoleService } from '../../../role/services/role.service';
+import { RolesEnum } from '../../enums/roles.enum';
+import { CreateUserDto } from '../../dtos/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +21,7 @@ export class AuthController {
         private jwtService: JwtService,
         private tokenService: TokenService,
         private userService: UserService,
+        private roleService: RoleService,
     ) {}
 
     @Post('/signin')
@@ -55,47 +59,43 @@ export class AuthController {
 
     @Post('/social')
     async social(@Res() response, @Body() createSocialUserDto: CreateSocialUserDto) {
-        let user = await this.authService.findAByEmail(createSocialUserDto.email);
-        let social = await this.authService.findSocialById(createSocialUserDto.id);
-        let newSocial = false;
+        try {
+            let user = await this.authService.findAByEmail(createSocialUserDto.email);
+            let social = await this.authService.findSocialById(createSocialUserDto.id);
+            let newSocial = false;
 
-        if (typeof social === 'undefined') {
-            newSocial = true;
-            social = await SocialUserModel.create({
-                id: socialUser.id,
-                email: socialUser.email,
-                firstName: socialUser.firstName,
-                lastName: socialUser.lastName,
-                photoUrl: socialUser.photoUrl,
-                provider: socialUser.provider,
-                status: Status.ACTIVE,
-                created: new Date(),
-                updated: new Date(),
-            });
-        }
+            if (typeof social === 'undefined') {
+                newSocial = true;
+                createSocialUserDto.status = Status.ACTIVE;
+                social = await this.authService.createSocialUser(createSocialUserDto);
+            }
 
-        if (typeof user === 'undefined') {
-            const role = await findRoleByName(Roles.USER);
-            user = await UserModel.create({
-                email: socialUser.email,
-                status: Status.ACTIVE,
-                role,
-                created: new Date(),
-                updated: new Date(),
-            });
-        }
+            if (typeof user === 'undefined') {
+                const role = await this.roleService.findRoleByName(RolesEnum.USER);
+                const createUserDto: CreateUserDto = {
+                    email: createSocialUserDto.email,
+                    status: Status.ACTIVE,
+                    role: role,
+                    created: new Date(),
+                    updated: new Date(),
+                };
+                user = await this.userService.create(createUserDto);
+            }
+            if (newSocial) {
+                user.socials = [...user.socials, social];
+            }
 
-        if (newSocial) {
-            user.socials = [...user.socials, social];
+            // await checkAdminAccess(type, user.role.name);
+            const tokenHash = await this.jwtService.createToken(user);
+            if (typeof user.token !== 'undefined') {
+                await this.tokenService.removeTokenEntry(user.token.hash);
+            }
+            const token: CreateTokenDto = {hash: tokenHash, status: Status.ACTIVE};
+            user.token = await this.tokenService.create(token);
+            await this.userService.update(user._id, user);
+            return response.status(HttpStatus.OK).json({token: user.token.hash});
+        } catch (err) {
+            return response.status(HttpStatus.BAD_REQUEST).json({error: err.message});
         }
-
-        // await checkAdminAccess(type, user.role.name);
-        const tokenHash = await JwtService.createToken(user);
-        if (typeof user.token !== 'undefined') {
-            await removeTokenEntry(user.token.hash);
-        }
-        user.token = await TokenModel.create({hash: tokenHash, status: Status.ACTIVE});
-        await user.updateOne(user);
-        return user;
     }
 }

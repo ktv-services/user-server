@@ -15,17 +15,17 @@ export class CreateUserDto {
 
     @IsString()
     @IsNotEmpty()
-    password: string;
+    password?: string;
 
     @IsString()
     @IsNotEmpty()
     status: string;
 
-    role: Role;
+    role?: Role;
 
-    token: Token;
+    token?: Token;
 
-    socials: SocialUser[];
+    socials?: SocialUser[];
 
     @IsDate()
     @Type(() => Date)

@@ -39,7 +39,6 @@ export class UserService {
         } catch (error) {
             throw new BadRequestException(error.message);
         }
-
     }
 
     async update(id: string, updateUserDto: UpdateUserDto): Promise<User>  {
