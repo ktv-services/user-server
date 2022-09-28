@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import { User, UserDocument } from '../schemas/user.schema';
 import { SocialUser, SocialUserDocument } from '../schemas/social-user.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -6,12 +6,14 @@ import { Model } from 'mongoose';
 import { AuthTypesEnum } from '../enums/auth-types.enum';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { CreateSocialUserDto } from '../dtos/create-social-user.dto';
+import { UserService } from './user.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectModel(User.name) private userModel: Model<UserDocument>,
         @InjectModel(SocialUser.name) private socialUserModel: Model<SocialUserDocument>,
+        private readonly userService: UserService,
     ) {}
 
     async findAByEmail(email: string): Promise<UpdateUserDto>  {
@@ -64,6 +66,19 @@ export class AuthService {
         user.blockTime = null;
         user.updated = new Date();
         return this.userModel.findByIdAndUpdate(user._id, user);
+    }
+
+    async unbindSocial(id: string, socialId: string): Promise<User> {
+        await this.deleteSocial(String(socialId));
+        return await this.userModel.findById(id).exec();
+    }
+
+    async deleteSocial(id: string): Promise<SocialUser> {
+        const social: SocialUser = await this.socialUserModel.findById(id);
+        if (!social) {
+            throw new NotFoundException(`Social id:${id} not found`);
+        }
+        return this.socialUserModel.findByIdAndDelete(id).exec();
     }
 
     async checkAdminAccess(type: string, role: string): Promise<void> {

@@ -2,6 +2,7 @@ import { IsDate, IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validato
 import { Type } from 'class-transformer';
 
 export class CreateSocialUserDto {
+    _id?: string;
     id?: string;
 
     @IsEmail()
