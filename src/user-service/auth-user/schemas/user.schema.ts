@@ -18,6 +18,9 @@ export class User {
     @Prop({ type: 'number', default: 0 })
     wrong: number;
 
+    @Prop({ type: 'string', default: 'Standard' })
+    type: string;
+
     @Prop({ type: 'Date', default: null })
     blockTime: Date;
 

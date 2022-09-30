@@ -3,10 +3,15 @@ import { UserService } from '../../services/user.service';
 import { User } from '../../schemas/user.schema';
 import { CreateUserDto } from '../../dtos/create-user.dto';
 import { UpdateUserDto } from '../../dtos/update-user.dto';
+import { ChangeUserPasswordDto } from '../../dtos/change-user-password.dto';
+import { AuthService } from '../../services/auth.service';
 
 @Controller('users')
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(
+        private readonly userService: UserService,
+        private readonly authService: AuthService,
+    ) {}
 
     @Get()
     async findAll(@Res() response): Promise<User[]> {
@@ -42,6 +47,26 @@ export class UserController {
     async update(@Res() response, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
         try {
             const user: User = await this.userService.update(id, updateUserDto);
+            return response.status(HttpStatus.OK).json({user: user});
+        } catch (err) {
+            return response.status(err.status).json(err.response);
+        }
+    }
+
+    @Put(':id/change-password')
+    async changePassword(@Res() response, @Param('id') id: string, @Body() changeUserPasswordDto: ChangeUserPasswordDto): Promise<User> {
+        try {
+            const user: User = await this.userService.changeUserPassword(id, changeUserPasswordDto);
+            return response.status(HttpStatus.OK).json({user: user});
+        } catch (err) {
+            return response.status(err.status).json(err.response);
+        }
+    }
+
+    @Get(':id/unbind-social/:social')
+    async unbindSocial(@Res() response, @Param('id') id: string, @Param('social') socialId: string): Promise<User> {
+        try {
+            const user: User = await this.authService.unbindSocial(id, socialId);
             return response.status(HttpStatus.OK).json({user: user});
         } catch (err) {
             return response.status(err.status).json(err.response);

@@ -5,11 +5,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { Token, TokenSchema } from './schemas/token.schema';
 import { SocialUser, SocialUserSchema } from './schemas/social-user.schema';
+import { Role, RoleSchema } from '../role/schemas/role.schema';
 import { TokenService } from './services/token.service';
 import { AuthController } from './controllers/auth/auth.controller';
 import { PasswordService } from './services/password.service';
 import { AuthService } from './services/auth.service';
 import { JwtService } from './services/jwt.service';
+import { RoleService } from '../role/services/role.service';
 
 @Module({
     imports: [
@@ -17,6 +19,7 @@ import { JwtService } from './services/jwt.service';
             { name: User.name, schema: UserSchema },
             { name: Token.name, schema: TokenSchema },
             { name: SocialUser.name, schema: SocialUserSchema },
+            { name: Role.name, schema: RoleSchema },
         ]),
     ],
     controllers: [UserController, AuthController],
@@ -26,6 +29,7 @@ import { JwtService } from './services/jwt.service';
         PasswordService,
         AuthService,
         JwtService,
+        RoleService
     ],
 })
 export class AuthUserModule {}
