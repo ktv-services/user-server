@@ -27,6 +27,8 @@ export class CreateUserDto {
 
     socials?: SocialUser[];
 
+    type?: string;
+
     @IsDate()
     @Type(() => Date)
     created: Date = new Date();

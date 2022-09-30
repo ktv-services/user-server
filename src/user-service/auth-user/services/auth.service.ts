@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { User, UserDocument } from '../schemas/user.schema';
 import { SocialUser, SocialUserDocument } from '../schemas/social-user.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -7,6 +7,7 @@ import { AuthTypesEnum } from '../enums/auth-types.enum';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { CreateSocialUserDto } from '../dtos/create-social-user.dto';
 import { UserService } from './user.service';
+import { UserTypesEnum } from '../enums/user-types.enum';
 
 @Injectable()
 export class AuthService {
@@ -69,7 +70,12 @@ export class AuthService {
     }
 
     async unbindSocial(id: string, socialId: string): Promise<User> {
+        const user = await this.userService.findOne(id);
         await this.deleteSocial(String(socialId));
+        const socialCount: number = 2; //TODO Move it to .env file
+        if (user.type === UserTypesEnum.SOCIAL && user.socials.length < socialCount) {
+            return await this.userService.delete(id);
+        }
         return await this.userModel.findById(id).exec();
     }
 

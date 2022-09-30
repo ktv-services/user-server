@@ -12,6 +12,7 @@ import { CreateSocialUserDto } from '../../dtos/create-social-user.dto';
 import { RoleService } from '../../../role/services/role.service';
 import { RolesEnum } from '../../enums/roles.enum';
 import { CreateUserDto } from '../../dtos/create-user.dto';
+import { UserTypesEnum } from '../../enums/user-types.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -76,6 +77,7 @@ export class AuthController {
                     email: createSocialUserDto.email,
                     status: Status.ACTIVE,
                     role: role,
+                    type: UserTypesEnum.SOCIAL,
                     created: new Date(),
                     updated: new Date(),
                 };

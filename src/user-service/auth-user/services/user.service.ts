@@ -6,6 +6,7 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { ChangeUserPasswordDto } from '../dtos/change-user-password.dto';
 import { PasswordService } from './password.service';
+import { UserTypesEnum } from '../enums/user-types.enum';
 
 @Injectable()
 export class UserService {
@@ -58,6 +59,7 @@ export class UserService {
             throw new NotFoundException(`User id:${id} not found`);
         }
         user.password = await this.passwordService.hashPassword(changeUserPasswordDto.password);
+        user.type = UserTypesEnum.STANDARD;
         return this.userModel.findByIdAndUpdate(id, user).populate('role').populate('token').populate('socials').exec();
     }
 
