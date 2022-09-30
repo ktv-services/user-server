@@ -1,19 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { User, UserDocument } from '../schemas/user.schema';
+import { SocialUser, SocialUserDocument } from '../schemas/social-user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AuthTypesEnum } from '../enums/auth-types.enum';
 import { UpdateUserDto } from '../dtos/update-user.dto';
+import { CreateSocialUserDto } from '../dtos/create-social-user.dto';
+import { UserService } from './user.service';
+import { UserTypesEnum } from '../enums/user-types.enum';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectModel(User.name) private userModel: Model<UserDocument>,
+        @InjectModel(SocialUser.name) private socialUserModel: Model<SocialUserDocument>,
+        private readonly userService: UserService,
     ) {}
 
     async findAByEmail(email: string): Promise<UpdateUserDto>  {
         const users: User[] = await this.userModel.find({ email }).populate('role').populate('token').populate('socials').exec();
         return users[0];
+    }
+
+    async findSocialById(id: string): Promise<SocialUser>  {
+        const socialUsers: SocialUser[] = await this.socialUserModel.find({ id }).exec();
+        return socialUsers[0];
+    }
+
+    async createSocialUser(createSocialUserDto: CreateSocialUserDto): Promise<SocialUser> {
+        try {
+            const createdSocialUser: any = new this.socialUserModel(createSocialUserDto);
+            const socialUser: CreateSocialUserDto = await createdSocialUser.save();
+            return await this.findSocialById(socialUser.id);
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
     }
 
     async checkBlockTime(blockTime: Date): Promise<boolean> {
@@ -46,6 +67,24 @@ export class AuthService {
         user.blockTime = null;
         user.updated = new Date();
         return this.userModel.findByIdAndUpdate(user._id, user);
+    }
+
+    async unbindSocial(id: string, socialId: string): Promise<User> {
+        const user = await this.userService.findOne(id);
+        await this.deleteSocial(String(socialId));
+        const socialCount: number = 2; //TODO Move it to .env file
+        if (user.type === UserTypesEnum.SOCIAL && user.socials.length < socialCount) {
+            return await this.userService.delete(id);
+        }
+        return await this.userModel.findById(id).exec();
+    }
+
+    async deleteSocial(id: string): Promise<SocialUser> {
+        const social: SocialUser = await this.socialUserModel.findById(id);
+        if (!social) {
+            throw new NotFoundException(`Social id:${id} not found`);
+        }
+        return this.socialUserModel.findByIdAndDelete(id).exec();
     }
 
     async checkAdminAccess(type: string, role: string): Promise<void> {

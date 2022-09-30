@@ -31,6 +31,18 @@ export class RoleService {
         }
     }
 
+    async findRoleByName(name: string): Promise<Role>  {
+        try {
+            const role: Role = (await this.roleModel.find({ name }).populate('permissions').limit(1))[0];
+            if (!role) {
+                throw new NotFoundException(`Role name:${name} not found`);
+            }
+            return role;
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
+    }
+
     async create(createRoleDto: CreateRoleDto): Promise<Role>  {
         const createdRole: any = new this.roleModel(createRoleDto);
         const role: CreateRoleDto = await createdRole.save();
