@@ -8,6 +8,7 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { CreateSocialUserDto } from '../dtos/create-social-user.dto';
 import { UserService } from './user.service';
 import { UserTypesEnum } from '../enums/user-types.enum';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
         @InjectModel(User.name) private userModel: Model<UserDocument>,
         @InjectModel(SocialUser.name) private socialUserModel: Model<SocialUserDocument>,
         private readonly userService: UserService,
+        private configService: ConfigService
     ) {}
 
     async findAByEmail(email: string): Promise<UpdateUserDto>  {
@@ -44,7 +46,7 @@ export class AuthService {
 
     async setWrong(user: UpdateUserDto): Promise<User> {
         user.wrong = user.wrong + 1;
-        if (user.wrong === 5) {
+        if (user.wrong === this.configService.get<number>('BLOCK_WRONG')) {
             await this.blockUser(user);
             throw new Error('User was blocked on 5 min');
         }
@@ -53,7 +55,7 @@ export class AuthService {
     }
 
     async blockUser(user: UpdateUserDto): Promise<void> {
-        const blockAccountTime: number = 5;
+        const blockAccountTime: number = this.configService.get<number>('BLOCK_TIME');
         user.blockTime = await this.addMinutesToDate(new Date(), blockAccountTime);
         return this.userModel.findByIdAndUpdate(user._id, user);
     }
@@ -72,7 +74,7 @@ export class AuthService {
     async unbindSocial(id: string, socialId: string): Promise<User> {
         const user = await this.userService.findOne(id);
         await this.deleteSocial(String(socialId));
-        const socialCount: number = 2; //TODO Move it to .env file
+        const socialCount: number = this.configService.get<number>('SOCIAL_COUNT');
         if (user.type === UserTypesEnum.SOCIAL && user.socials.length < socialCount) {
             return await this.userService.delete(id);
         }
