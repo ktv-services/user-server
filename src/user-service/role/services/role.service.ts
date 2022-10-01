@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Role, RoleDocument } from "../schemas/role.schema";
 import { CreateRoleDto } from "../dtos/create-role.dto";
 import { UpdateRoleDto } from "../dtos/update-role.dto";
+import { RoleDto } from '../dtos/role.dto';
 
 @Injectable()
 export class RoleService {
@@ -11,17 +12,17 @@ export class RoleService {
         @InjectModel(Role.name) private roleModel: Model<RoleDocument>,
     ) {}
 
-    async findAll(): Promise<Role[]>  {
-        const roles: Role[] = await this.roleModel.find().populate('permissions').exec();
+    async findAll(): Promise<RoleDto[]>  {
+        const roles: RoleDto[] = await this.roleModel.find().populate('permissions').exec();
         if (!roles || roles.length == 0) {
             throw new NotFoundException('Roles data not found!');
         }
         return roles;
     }
 
-    async findOne(id: string): Promise<Role>  {
+    async findOne(id: string): Promise<RoleDto>  {
         try {
-            const role: Role = await this.roleModel.findById(id).populate('permissions').exec();
+            const role: RoleDto = await this.roleModel.findById(id).populate('permissions').exec();
             if (!role) {
                 throw new NotFoundException(`Role id:${id} not found`);
             }
@@ -31,9 +32,9 @@ export class RoleService {
         }
     }
 
-    async findRoleByName(name: string): Promise<Role>  {
+    async findRoleByName(name: string): Promise<RoleDto>  {
         try {
-            const role: Role = (await this.roleModel.find({ name }).populate('permissions').limit(1))[0];
+            const role: RoleDto = (await this.roleModel.find({ name }).populate('permissions').limit(1))[0];
             if (!role) {
                 throw new NotFoundException(`Role name:${name} not found`);
             }
@@ -43,22 +44,22 @@ export class RoleService {
         }
     }
 
-    async create(createRoleDto: CreateRoleDto): Promise<Role>  {
+    async create(createRoleDto: CreateRoleDto): Promise<RoleDto>  {
         const createdRole: any = new this.roleModel(createRoleDto);
-        const role: CreateRoleDto = await createdRole.save();
+        const role: RoleDto = await createdRole.save();
         return await this.roleModel.findById(role._id).populate('permissions').exec();
     }
 
-    async update(id: string, updateRoleDto: UpdateRoleDto): Promise<Role>  {
-        const role: Role = await this.roleModel.findById(id).exec();
+    async update(id: string, updateRoleDto: UpdateRoleDto): Promise<RoleDto>  {
+        const role: RoleDto = await this.roleModel.findById(id).exec();
         if (!role) {
             throw new NotFoundException(`Role id:${id} not found`);
         }
         return this.roleModel.findByIdAndUpdate(id, updateRoleDto, {new: true}).populate('permissions');
     }
 
-    async delete(id: string): Promise<Role> {
-        const role: Role = await this.roleModel.findById(id).exec();
+    async delete(id: string): Promise<RoleDto> {
+        const role: RoleDto = await this.roleModel.findById(id).exec();
         if (!role) {
             throw new NotFoundException(`Role id:${id} not found`);
         }

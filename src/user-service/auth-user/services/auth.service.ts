@@ -4,11 +4,11 @@ import { SocialUser, SocialUserDocument } from '../schemas/social-user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AuthTypesEnum } from '../enums/auth-types.enum';
-import { UpdateUserDto } from '../dtos/update-user.dto';
-import { CreateSocialUserDto } from '../dtos/create-social-user.dto';
+import { CreateSocialUserDto } from '../dtos/social-user/create-social-user.dto';
 import { UserService } from './user.service';
 import { UserTypesEnum } from '../enums/user-types.enum';
 import { ConfigService } from '@nestjs/config';
+import { UserDto } from "../dtos/user/user.dto";
 
 @Injectable()
 export class AuthService {
@@ -19,8 +19,8 @@ export class AuthService {
         private configService: ConfigService
     ) {}
 
-    async findAByEmail(email: string): Promise<UpdateUserDto>  {
-        const users: User[] = await this.userModel.find({ email }).populate('role').populate('token').populate('socials').exec();
+    async findAByEmail(email: string): Promise<UserDto>  {
+        const users: UserDto[] = await this.userModel.find({ email }).populate('role').populate('token').populate('socials').exec();
         return users[0];
     }
 
@@ -44,7 +44,7 @@ export class AuthService {
         return !(currentTime > blockTime.getTime());
     };
 
-    async setWrong(user: UpdateUserDto): Promise<User> {
+    async setWrong(user: UserDto): Promise<UserDto> {
         user.wrong = user.wrong + 1;
         if (user.wrong === this.configService.get<number>('BLOCK_WRONG')) {
             await this.blockUser(user);
@@ -54,7 +54,7 @@ export class AuthService {
         return this.userModel.findByIdAndUpdate(user._id, user);
     }
 
-    async blockUser(user: UpdateUserDto): Promise<void> {
+    async blockUser(user: UserDto): Promise<void> {
         const blockAccountTime: number = this.configService.get<number>('BLOCK_TIME');
         user.blockTime = await this.addMinutesToDate(new Date(), blockAccountTime);
         return this.userModel.findByIdAndUpdate(user._id, user);
@@ -64,15 +64,15 @@ export class AuthService {
         return new Date(date.getTime() + minutes * 60000);
     }
 
-    async unBlock(user: UpdateUserDto): Promise<void> {
+    async unBlock(user: UserDto): Promise<void> {
         user.wrong = 0;
         user.blockTime = null;
         user.updated = new Date();
         return this.userModel.findByIdAndUpdate(user._id, user);
     }
 
-    async unbindSocial(id: string, socialId: string): Promise<User> {
-        const user = await this.userService.findOne(id);
+    async unbindSocial(id: string, socialId: string): Promise<UserDto> {
+        const user: UserDto = await this.userService.findOne(id);
         await this.deleteSocial(String(socialId));
         const socialCount: number = this.configService.get<number>('SOCIAL_COUNT');
         if (user.type === UserTypesEnum.SOCIAL && user.socials.length < socialCount) {

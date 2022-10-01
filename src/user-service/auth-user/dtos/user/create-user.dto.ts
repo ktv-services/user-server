@@ -1,12 +1,10 @@
 import { IsDate, IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Role } from '../../role/schemas/role.schema';
-import { Token } from '../schemas/token.schema';
-import { SocialUser } from "../schemas/social-user.schema";
+import { Token } from '../../schemas/token.schema';
+import { SocialUser } from "../../schemas/social-user.schema";
+import { RoleDto } from '../../../role/dtos/role.dto';
 
 export class CreateUserDto {
-    _id?: string;
-
     @IsEmail()
     @IsString()
     @IsNotEmpty()
@@ -21,13 +19,13 @@ export class CreateUserDto {
     @IsNotEmpty()
     status: string;
 
-    role?: Role;
+    role: RoleDto;
 
     token?: Token;
 
     socials?: SocialUser[];
 
-    type?: string;
+    type: string;
 
     @IsDate()
     @Type(() => Date)
