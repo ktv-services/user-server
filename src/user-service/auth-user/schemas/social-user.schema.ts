@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { SocialUserInterface } from '../interfaces/social-user.interface';
 
 export type SocialUserDocument = SocialUser & Document;
 
 @Schema()
-export class SocialUser {
+export class SocialUser implements SocialUserInterface {
     @Prop({ required: true, type: 'string', max: 50 })
     id: string;
 

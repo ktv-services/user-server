@@ -8,7 +8,8 @@ import { CreateSocialUserDto } from '../dtos/social-user/create-social-user.dto'
 import { UserService } from './user.service';
 import { UserTypesEnum } from '../enums/user-types.enum';
 import { ConfigService } from '@nestjs/config';
-import { UserDto } from "../dtos/user/user.dto";
+import { UserDto } from '../dtos/user/user.dto';
+import { SocialUserDto } from '../dtos/social-user/social-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,15 +25,15 @@ export class AuthService {
         return users[0];
     }
 
-    async findSocialById(id: string): Promise<SocialUser>  {
-        const socialUsers: SocialUser[] = await this.socialUserModel.find({ id }).exec();
+    async findSocialById(id: string): Promise<SocialUserDto>  {
+        const socialUsers: SocialUserDto[] = await this.socialUserModel.find({ id }).exec();
         return socialUsers[0];
     }
 
-    async createSocialUser(createSocialUserDto: CreateSocialUserDto): Promise<SocialUser> {
+    async createSocialUser(createSocialUserDto: CreateSocialUserDto): Promise<SocialUserDto> {
         try {
             const createdSocialUser: any = new this.socialUserModel(createSocialUserDto);
-            const socialUser: CreateSocialUserDto = await createdSocialUser.save();
+            const socialUser: SocialUserDto = await createdSocialUser.save();
             return await this.findSocialById(socialUser.id);
         } catch (error) {
             throw new BadRequestException(error.message);
@@ -81,8 +82,8 @@ export class AuthService {
         return await this.userModel.findById(id).exec();
     }
 
-    async deleteSocial(id: string): Promise<SocialUser> {
-        const social: SocialUser = await this.socialUserModel.findById(id);
+    async deleteSocial(id: string): Promise<SocialUserDto> {
+        const social: SocialUserDto = await this.socialUserModel.findById(id);
         if (!social) {
             throw new NotFoundException(`Social id:${id} not found`);
         }

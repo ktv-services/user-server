@@ -1,7 +1,8 @@
 import { IsDate, IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateSocialUserDto {
+export class SocialUserDto {
+    _id: string;
     id: string;
 
     @IsEmail()
@@ -26,7 +27,7 @@ export class CreateSocialUserDto {
     @IsString()
     provider: string;
 
-    status?: string;
+    status: string;
 
     @IsDate()
     @Type(() => Date)

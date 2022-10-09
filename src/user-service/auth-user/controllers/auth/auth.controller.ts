@@ -7,13 +7,13 @@ import { TokenService } from '../../services/token.service';
 import { CreateTokenDto } from '../../dtos/token/create-token.dto';
 import { Status } from '../../enums/statuses.enum';
 import { UserService } from '../../services/user.service';
-import { UpdateUserDto } from '../../dtos/user/update-user.dto';
 import { CreateSocialUserDto } from '../../dtos/social-user/create-social-user.dto';
 import { RoleService } from '../../../role/services/role.service';
 import { RolesEnum } from '../../enums/roles.enum';
 import { CreateUserDto } from '../../dtos/user/create-user.dto';
 import { UserTypesEnum } from '../../enums/user-types.enum';
-import {UserDto} from "../../dtos/user/user.dto";
+import { UserDto } from '../../dtos/user/user.dto';
+import { SocialUserDto } from "../../dtos/social-user/social-user.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -63,7 +63,7 @@ export class AuthController {
     async social(@Res() response, @Body() createSocialUserDto: CreateSocialUserDto) {
         try {
             let user = await this.authService.findAByEmail(createSocialUserDto.email);
-            let social = await this.authService.findSocialById(createSocialUserDto.id);
+            let social: SocialUserDto = await this.authService.findSocialById(createSocialUserDto.id);
             let newSocial = false;
 
             if (typeof social === 'undefined') {
