@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { TokenInterface } from '../interfaces/token.interface';
 
 export type TokenDocument = Token & Document;
 
 @Schema()
-export class Token {
+export class Token implements TokenInterface {
     @Prop({ required: true, type: 'string', unique: true, max: 255 })
     hash: string;
 

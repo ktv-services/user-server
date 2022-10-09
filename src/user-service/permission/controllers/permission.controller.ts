@@ -1,17 +1,17 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, Res, HttpStatus } from '@nestjs/common';
 import { PermissionService } from '../services/permission.service';
-import { Permission } from '../schemas/permission.schema';
 import { CreatePermissionDto } from '../dtos/create-permission.dto';
 import { UpdatePermissionDto } from '../dtos/update-permission.dto';
+import { PermissionDto } from '../dtos/permission.dto';
 
 @Controller('permissions')
 export class PermissionController {
     constructor(private readonly permissionService: PermissionService) {}
 
     @Get()
-    async findAll(@Res() response): Promise<Permission[]> {
+    async findAll(@Res() response): Promise<PermissionDto[]> {
         try {
-            const permissions: Permission[] = await this.permissionService.findAll();
+            const permissions: PermissionDto[] = await this.permissionService.findAll();
             return response.status(HttpStatus.OK).json({permissions: permissions});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -19,9 +19,9 @@ export class PermissionController {
     }
 
     @Get(':id')
-    async findOne(@Res() response, @Param('id') id: string): Promise<Permission> {
+    async findOne(@Res() response, @Param('id') id: string): Promise<PermissionDto> {
         try {
-            const permission: Permission = await this.permissionService.findOne(id);
+            const permission: PermissionDto = await this.permissionService.findOne(id);
             return response.status(HttpStatus.OK).json({permission: permission});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -29,9 +29,9 @@ export class PermissionController {
     }
 
     @Post()
-    async create(@Res() response, @Body() createPermissionDto: CreatePermissionDto): Promise<Permission> {
+    async create(@Res() response, @Body() createPermissionDto: CreatePermissionDto): Promise<PermissionDto> {
         try {
-            const permission: Permission = await this.permissionService.create(createPermissionDto);
+            const permission: PermissionDto = await this.permissionService.create(createPermissionDto);
             return response.status(HttpStatus.CREATED).json({permission: permission});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -39,9 +39,9 @@ export class PermissionController {
     }
 
     @Put(':id')
-    async update(@Res() response, @Param('id') id: string, @Body() updatePermissionDto: UpdatePermissionDto): Promise<Permission> {
+    async update(@Res() response, @Param('id') id: string, @Body() updatePermissionDto: UpdatePermissionDto): Promise<PermissionDto> {
         try {
-            const permission: Permission = await this.permissionService.update(id, updatePermissionDto);
+            const permission: PermissionDto = await this.permissionService.update(id, updatePermissionDto);
             return response.status(HttpStatus.OK).json({permission: permission});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -49,9 +49,9 @@ export class PermissionController {
     }
 
     @Delete(':id')
-    async remove(@Res() response, @Param('id') id: string): Promise<Permission> {
+    async remove(@Res() response, @Param('id') id: string): Promise<PermissionDto> {
         try {
-            const permission: Permission = await this.permissionService.delete(id);
+            const permission: PermissionDto = await this.permissionService.delete(id);
             return response.status(HttpStatus.OK).json({permission: permission});
         } catch (err) {
             return response.status(err.status).json(err.response);

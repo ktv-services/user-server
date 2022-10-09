@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { PermissionInterface } from '../interfaces/permission.interface';
 
 export type PermissionDocument = Permission & Document;
 
 @Schema()
-export class Permission {
+export class Permission implements PermissionInterface {
     @Prop({ required: true, type: 'string' })
     name: string;
 

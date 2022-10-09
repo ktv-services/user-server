@@ -1,14 +1,11 @@
 import { IsDate, IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Role } from '../../role/schemas/role.schema';
-import { Token } from '../schemas/token.schema';
-import { SocialUser } from '../schemas/social-user.schema';
+import { Token } from '../../schemas/token.schema';
+import { SocialUser } from "../../schemas/social-user.schema";
+import { RoleDto } from '../../../role/dtos/role.dto';
 
-export class UpdateUserDto {
+export class UserDto {
     _id?: string;
-    password?: string;
-    wrong?: number;
-    blockTime?: Date;
 
     @IsEmail()
     @IsString()
@@ -18,13 +15,27 @@ export class UpdateUserDto {
 
     @IsString()
     @IsNotEmpty()
+    password: string;
+
+    @IsString()
+    @IsNotEmpty()
     status: string;
 
-    role: Role;
+    wrong: number;
+
+    blockTime: Date;
+
+    role: RoleDto;
 
     token: Token;
 
     socials: SocialUser[];
+
+    type: string;
+
+    @IsDate()
+    @Type(() => Date)
+    created: Date = new Date();
 
     @IsDate()
     @Type(() => Date)
