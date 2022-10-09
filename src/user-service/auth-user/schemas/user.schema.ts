@@ -4,11 +4,12 @@ import * as mongoose from 'mongoose';
 import { Role } from '../../role/schemas/role.schema';
 import { Token } from './token.schema';
 import { SocialUser } from './social-user.schema';
+import { UserInterface } from '../interfaces/user.interface';
 
 export type UserDocument = User & Document;
 
 @Schema()
-export class User {
+export class User implements UserInterface {
     @Prop({ required: true, type: 'string', unique: true, max: 100 })
     email: string;
 

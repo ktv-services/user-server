@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
 import { UserService } from '../../services/user.service';
-import { User } from '../../schemas/user.schema';
-import { CreateUserDto } from '../../dtos/create-user.dto';
-import { UpdateUserDto } from '../../dtos/update-user.dto';
-import { ChangeUserPasswordDto } from '../../dtos/change-user-password.dto';
+import { CreateUserDto } from '../../dtos/user/create-user.dto';
+import { UpdateUserDto } from '../../dtos/user/update-user.dto';
+import { ChangeUserPasswordDto } from '../../dtos/user/change-user-password.dto';
 import { AuthService } from '../../services/auth.service';
+import { UserDto } from '../../dtos/user/user.dto';
 
 @Controller('users')
 export class UserController {
@@ -14,9 +14,9 @@ export class UserController {
     ) {}
 
     @Get()
-    async findAll(@Res() response): Promise<User[]> {
+    async findAll(@Res() response): Promise<UserDto[]> {
         try {
-            const users: User[] = await this.userService.findAll();
+            const users: UserDto[] = await this.userService.findAll();
             return response.status(HttpStatus.OK).json({users: users});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -24,9 +24,9 @@ export class UserController {
     }
 
     @Get(':id')
-    async findOne(@Res() response, @Param('id') id: string): Promise<User> {
+    async findOne(@Res() response, @Param('id') id: string): Promise<UserDto> {
         try {
-            const user: User = await this.userService.findOne(id);
+            const user: UserDto = await this.userService.findOne(id);
             return response.status(HttpStatus.OK).json({user: user});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -34,9 +34,9 @@ export class UserController {
     }
 
     @Post()
-    async create(@Res() response, @Body() createUserDto: CreateUserDto): Promise<User> {
+    async create(@Res() response, @Body() createUserDto: CreateUserDto): Promise<UserDto> {
         try {
-            const user: User = await this.userService.create(createUserDto);
+            const user: UserDto = await this.userService.create(createUserDto);
             return response.status(HttpStatus.CREATED).json({user: user});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -44,9 +44,9 @@ export class UserController {
     }
 
     @Put(':id')
-    async update(@Res() response, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
+    async update(@Res() response, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<UserDto> {
         try {
-            const user: User = await this.userService.update(id, updateUserDto);
+            const user: UserDto = await this.userService.update(id, updateUserDto);
             return response.status(HttpStatus.OK).json({user: user});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -54,9 +54,9 @@ export class UserController {
     }
 
     @Put(':id/change-password')
-    async changePassword(@Res() response, @Param('id') id: string, @Body() changeUserPasswordDto: ChangeUserPasswordDto): Promise<User> {
+    async changePassword(@Res() response, @Param('id') id: string, @Body() changeUserPasswordDto: ChangeUserPasswordDto): Promise<UserDto> {
         try {
-            const user: User = await this.userService.changeUserPassword(id, changeUserPasswordDto);
+            const user: UserDto = await this.userService.changeUserPassword(id, changeUserPasswordDto);
             return response.status(HttpStatus.OK).json({user: user});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -64,9 +64,9 @@ export class UserController {
     }
 
     @Get(':id/unbind-social/:social')
-    async unbindSocial(@Res() response, @Param('id') id: string, @Param('social') socialId: string): Promise<User> {
+    async unbindSocial(@Res() response, @Param('id') id: string, @Param('social') socialId: string): Promise<UserDto> {
         try {
-            const user: User = await this.authService.unbindSocial(id, socialId);
+            const user: UserDto = await this.authService.unbindSocial(id, socialId);
             return response.status(HttpStatus.OK).json({user: user});
         } catch (err) {
             return response.status(err.status).json(err.response);
@@ -74,9 +74,9 @@ export class UserController {
     }
 
     @Delete(':id')
-    async remove(@Res() response, @Param('id') id: string): Promise<User> {
+    async remove(@Res() response, @Param('id') id: string): Promise<UserDto> {
         try {
-            const user: User = await this.userService.delete(id);
+            const user: UserDto = await this.userService.delete(id);
             return response.status(HttpStatus.OK).json({user: user});
         } catch (err) {
             return response.status(err.status).json(err.response);

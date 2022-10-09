@@ -2,11 +2,12 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { Permission } from '../../permission/schemas/permission.schema';
+import { RoleInterface } from '../interfaces/role.interface';
 
 export type RoleDocument = Role & Document;
 
 @Schema()
-export class Role {
+export class Role implements RoleInterface {
     @Prop({ required: true, type: 'string' })
     name: string;
 

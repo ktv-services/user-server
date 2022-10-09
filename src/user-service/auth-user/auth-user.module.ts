@@ -12,6 +12,7 @@ import { PasswordService } from './services/password.service';
 import { AuthService } from './services/auth.service';
 import { JwtService } from './services/jwt.service';
 import { RoleService } from '../role/services/role.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { RoleService } from '../role/services/role.service';
             { name: SocialUser.name, schema: SocialUserSchema },
             { name: Role.name, schema: RoleSchema },
         ]),
+        ConfigModule
     ],
     controllers: [UserController, AuthController],
     providers: [
