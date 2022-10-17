@@ -19,7 +19,7 @@ export class UserController {
             const users: UserDto[] = await this.userService.findAll();
             return response.status(HttpStatus.OK).json({users: users});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 
@@ -29,7 +29,7 @@ export class UserController {
             const user: UserDto = await this.userService.findOne(id);
             return response.status(HttpStatus.OK).json({user: user});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 
@@ -37,9 +37,9 @@ export class UserController {
     async create(@Res() response, @Body() createUserDto: CreateUserDto): Promise<UserDto> {
         try {
             const user: UserDto = await this.userService.create(createUserDto);
-            return response.status(HttpStatus.CREATED).json({user: user});
+            return response.status(HttpStatus.CREATED).json({user: user, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 
@@ -47,9 +47,9 @@ export class UserController {
     async update(@Res() response, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<UserDto> {
         try {
             const user: UserDto = await this.userService.update(id, updateUserDto);
-            return response.status(HttpStatus.OK).json({user: user});
+            return response.status(HttpStatus.OK).json({user: user, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 
@@ -57,9 +57,9 @@ export class UserController {
     async changePassword(@Res() response, @Param('id') id: string, @Body() changeUserPasswordDto: ChangeUserPasswordDto): Promise<UserDto> {
         try {
             const user: UserDto = await this.userService.changeUserPassword(id, changeUserPasswordDto);
-            return response.status(HttpStatus.OK).json({user: user});
+            return response.status(HttpStatus.OK).json({user: user, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 
@@ -67,9 +67,9 @@ export class UserController {
     async unbindSocial(@Res() response, @Param('id') id: string, @Param('social') socialId: string): Promise<UserDto> {
         try {
             const user: UserDto = await this.authService.unbindSocial(id, socialId);
-            return response.status(HttpStatus.OK).json({user: user});
+            return response.status(HttpStatus.OK).json({user: user, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 
@@ -77,9 +77,9 @@ export class UserController {
     async remove(@Res() response, @Param('id') id: string): Promise<UserDto> {
         try {
             const user: UserDto = await this.userService.delete(id);
-            return response.status(HttpStatus.OK).json({user: user});
+            return response.status(HttpStatus.OK).json({user: user, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 }

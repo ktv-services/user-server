@@ -38,6 +38,8 @@ export class UserService {
 
     async create(createUserDto: CreateUserDto): Promise<UserDto>  {
         try {
+            createUserDto.created = new Date();
+            createUserDto.updated = new Date();
             const createdUser: any = new this.userModel(createUserDto);
             const user: UserDto = await createdUser.save();
             return await this.userModel.findById(user._id).populate('role').populate('token').populate('socials').exec();
@@ -51,6 +53,7 @@ export class UserService {
         if (!user) {
             throw new NotFoundException(`User id:${id} not found`);
         }
+        updateUserDto.updated = new Date();
         return this.userModel.findByIdAndUpdate(id, updateUserDto, {new: true}).populate('role').populate('token').populate('socials').exec();
     }
 
@@ -61,6 +64,7 @@ export class UserService {
         }
         user.password = await this.passwordService.hashPassword(changeUserPasswordDto.password);
         user.type = UserTypesEnum.STANDARD;
+        user.updated = new Date();
         return this.userModel.findByIdAndUpdate(id, user).populate('role').populate('token').populate('socials').exec();
     }
 

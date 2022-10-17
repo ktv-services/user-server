@@ -45,6 +45,8 @@ export class RoleService {
     }
 
     async create(createRoleDto: CreateRoleDto): Promise<RoleDto>  {
+        createRoleDto.created = new Date();
+        createRoleDto.updated = new Date();
         const createdRole: any = new this.roleModel(createRoleDto);
         const role: RoleDto = await createdRole.save();
         return await this.roleModel.findById(role._id).populate('permissions').exec();
@@ -55,6 +57,7 @@ export class RoleService {
         if (!role) {
             throw new NotFoundException(`Role id:${id} not found`);
         }
+        updateRoleDto.updated = new Date();
         return this.roleModel.findByIdAndUpdate(id, updateRoleDto, {new: true}).populate('permissions');
     }
 

@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class UpdatePermissionDto {
@@ -11,7 +11,6 @@ export class UpdatePermissionDto {
     @IsNotEmpty()
     status: string;
 
-    @IsDate()
     @Type(() => Date)
     updated: Date;
 }

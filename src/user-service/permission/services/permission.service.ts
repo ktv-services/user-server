@@ -33,6 +33,8 @@ export class PermissionService {
     }
 
     async create(createPermissionDto: CreatePermissionDto): Promise<PermissionDto>  {
+        createPermissionDto.created = new Date();
+        createPermissionDto.updated = new Date();
         const createdPermission: any = new this.permissionModel(createPermissionDto);
         return createdPermission.save();
     }
@@ -42,6 +44,7 @@ export class PermissionService {
         if (!permission) {
             throw new NotFoundException(`Permission id:${id} not found`);
         }
+        updatePermissionDto.updated = new Date();
         return this.permissionModel.findByIdAndUpdate(id, updatePermissionDto, {new: true});
     }
 

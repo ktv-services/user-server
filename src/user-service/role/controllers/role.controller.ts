@@ -14,7 +14,7 @@ export class RoleController {
             const roles: RoleDto[] = await this.roleService.findAll();
             return response.status(HttpStatus.OK).json({roles: roles});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 
@@ -24,7 +24,7 @@ export class RoleController {
             const role: RoleDto = await this.roleService.findOne(id);
             return response.status(HttpStatus.OK).json({role: role});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 
@@ -32,9 +32,9 @@ export class RoleController {
     async create(@Res() response, @Body() createRoleDto: CreateRoleDto): Promise<RoleDto> {
         try {
             const role: RoleDto = await this.roleService.create(createRoleDto);
-            return response.status(HttpStatus.CREATED).json({role: role});
+            return response.status(HttpStatus.CREATED).json({role: role, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 
@@ -42,9 +42,9 @@ export class RoleController {
     async update(@Res() response, @Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto): Promise<RoleDto> {
         try {
             const role: RoleDto = await this.roleService.update(id, updateRoleDto);
-            return response.status(HttpStatus.OK).json({role: role});
+            return response.status(HttpStatus.OK).json({role: role, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 
@@ -52,9 +52,9 @@ export class RoleController {
     async remove(@Res() response, @Param('id') id: string): Promise<RoleDto> {
         try {
             const role: RoleDto = await this.roleService.delete(id);
-            return response.status(HttpStatus.OK).json({role: role});
+            return response.status(HttpStatus.OK).json({role: role, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response.message});
         }
     }
 }
