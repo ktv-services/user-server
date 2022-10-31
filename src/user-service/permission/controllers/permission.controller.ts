@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Res, Query, HttpStatus } from '@nestjs/common';
 import { PermissionService } from '../services/permission.service';
 import { CreatePermissionDto } from '../dtos/create-permission.dto';
 import { UpdatePermissionDto } from '../dtos/update-permission.dto';
@@ -9,9 +9,9 @@ export class PermissionController {
     constructor(private readonly permissionService: PermissionService) {}
 
     @Get()
-    async findAll(@Res() response): Promise<PermissionDto[]> {
+    async findAll(@Res() response, @Query() query: { active: boolean }): Promise<PermissionDto[]> {
         try {
-            const permissions: PermissionDto[] = await this.permissionService.findAll();
+            const permissions: PermissionDto[] = await this.permissionService.findAll(query.active);
             return response.status(HttpStatus.OK).json({permissions: permissions});
         } catch (err) {
             return response.status(err.status).json({error: err.response.message});
