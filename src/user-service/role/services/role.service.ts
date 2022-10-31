@@ -12,12 +12,12 @@ export class RoleService {
         @InjectModel(Role.name) private roleModel: Model<RoleDocument>,
     ) {}
 
-    async findAll(): Promise<RoleDto[]>  {
+    async findAll(active: boolean = false): Promise<RoleDto[]>  {
         const roles: RoleDto[] = await this.roleModel.find().populate('permissions').exec();
         if (!roles || roles.length == 0) {
             throw new NotFoundException('Roles data not found!');
         }
-        return roles;
+        return active ? roles.filter((item: RoleDto) => item.status === 'active') : roles;
     }
 
     async findOne(id: string): Promise<RoleDto>  {

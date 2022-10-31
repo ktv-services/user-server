@@ -17,7 +17,7 @@ export class PermissionService {
         if (!permissions || permissions.length == 0) {
             throw new NotFoundException('Permissions data not found!');
         }
-        return active ? permissions.filter((item: Permission) => item.status === 'active') : permissions;
+        return active ? permissions.filter((item: PermissionDto) => item.status === 'active') : permissions;
     }
 
     async findOne(id: string): Promise<PermissionDto>  {
