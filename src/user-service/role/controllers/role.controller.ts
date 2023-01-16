@@ -14,7 +14,7 @@ export class RoleController {
             const roles: RoleDto[] = await this.roleService.findAll(query.active);
             return response.status(HttpStatus.OK).json({roles: roles});
         } catch (err) {
-            return response.status(err.status).json({error: err.response.message});
+            return response.status(err.status).json({error: err.response?.message});
         }
     }
 
@@ -24,7 +24,7 @@ export class RoleController {
             const role: RoleDto = await this.roleService.findOne(id);
             return response.status(HttpStatus.OK).json({role: role});
         } catch (err) {
-            return response.status(err.status).json({error: err.response.message});
+            return response.status(err.status).json({error: err.response?.message});
         }
     }
 
@@ -34,7 +34,7 @@ export class RoleController {
             const role: RoleDto = await this.roleService.create(createRoleDto);
             return response.status(HttpStatus.CREATED).json({role: role, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json({error: err.response.message});
+            return response.status(err.status).json({error: err.response?.message});
         }
     }
 
@@ -44,7 +44,7 @@ export class RoleController {
             const role: RoleDto = await this.roleService.update(id, updateRoleDto);
             return response.status(HttpStatus.OK).json({role: role, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json({error: err.response.message});
+            return response.status(err.status).json({error: err.response?.message});
         }
     }
 
@@ -54,7 +54,7 @@ export class RoleController {
             const role: RoleDto = await this.roleService.delete(id);
             return response.status(HttpStatus.OK).json({role: role, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json({error: err.response.message});
+            return response.status(err.status).json({error: err.response?.message});
         }
     }
 }
