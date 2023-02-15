@@ -35,8 +35,7 @@ export class PermissionService {
     async create(createPermissionDto: CreatePermissionDto): Promise<PermissionDto>  {
         createPermissionDto.created = new Date();
         createPermissionDto.updated = new Date();
-        const createdPermission: any = new this.permissionModel(createPermissionDto);
-        return createdPermission.save();
+        return await this.permissionModel.create(createPermissionDto);
     }
 
     async update(id: string, updatePermissionDto: UpdatePermissionDto): Promise<PermissionDto>  {

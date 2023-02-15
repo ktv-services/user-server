@@ -1,12 +1,11 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { User, UserDocument } from '../schemas/user.schema';
 import { SocialUser, SocialUserDocument } from '../schemas/social-user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AuthTypesEnum } from '../enums/auth-types.enum';
 import { CreateSocialUserDto } from '../dtos/social-user/create-social-user.dto';
-import { UserService } from './user.service';
-import { UserTypesEnum } from '../enums/user-types.enum';
+import { UserService } from './user/user.service';
 import { ConfigService } from '@nestjs/config';
 import { UserDto } from '../dtos/user/user.dto';
 import { SocialUserDto } from '../dtos/social-user/social-user.dto';
@@ -70,24 +69,6 @@ export class AuthService {
         user.blockTime = null;
         user.updated = new Date();
         return this.userModel.findByIdAndUpdate(user._id, user);
-    }
-
-    async unbindSocial(id: string, socialId: string): Promise<UserDto> {
-        const user: UserDto = await this.userService.findOne(id);
-        await this.deleteSocial(String(socialId));
-        const socialCount: number = this.configService.get<number>('SOCIAL_COUNT');
-        if (user.type === UserTypesEnum.SOCIAL && user.socials.length < socialCount) {
-            return await this.userService.delete(id);
-        }
-        return await this.userModel.findById(id).exec();
-    }
-
-    async deleteSocial(id: string): Promise<SocialUserDto> {
-        const social: SocialUserDto = await this.socialUserModel.findById(id);
-        if (!social) {
-            throw new NotFoundException(`Social id:${id} not found`);
-        }
-        return this.socialUserModel.findByIdAndDelete(id).exec();
     }
 
     async checkAdminAccess(type: string, role: string): Promise<void> {

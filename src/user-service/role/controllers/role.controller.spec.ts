@@ -5,19 +5,17 @@ import { RoleController } from './role.controller';
 import { CreateRoleDto } from '../dtos/create-role.dto';
 import { RoleService } from '../services/role.service';
 import { Role } from '../schemas/role.schema';
-import {UpdateRoleDto} from "../dtos/update-role.dto";
-import {RoleDto} from "../dtos/role.dto";
+import { UpdateRoleDto } from '../dtos/update-role.dto';
+import { RoleDto } from '../dtos/role.dto';
+import { getFirstRole, getRoles } from '../data/role.data';
+import { getFirstPermission } from '../../permission/data/permissions.data';
 
 
 describe('RoleController', () => {
     let appController: RoleController;
     const date = new Date();
-    const permission: CreatePermissionDto = {name: 'Permission 1', status: 'active', created: date, updated: date};
-    const roles: CreateRoleDto[] = [
-        {name: 'Role 1', permissions: [permission], status: 'active', created: date, updated: date},
-        {name: 'Role 2', permissions: [permission], status: 'active', created: date, updated: date},
-        {name: 'Role 3', permissions: [permission], status: 'new', created: date, updated: date},
-    ];
+    const permission: CreatePermissionDto = getFirstPermission();
+    const roles: CreateRoleDto[] = getRoles(permission);
 
     beforeEach(async () => {
         const app: TestingModule = await Test.createTestingModule({
@@ -43,7 +41,7 @@ describe('RoleController', () => {
 
     it('should return role', async () => {
         const data = {
-            role: roles[0],
+            role: getFirstRole(permission),
         };
         const param = '11111';
         const responseObj = getResponse(data);

@@ -5,17 +5,14 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Permission } from '../schemas/permission.schema';
 import { CreatePermissionDto } from '../dtos/create-permission.dto';
 import { UpdatePermissionDto } from '../dtos/update-permission.dto';
-import {PermissionDto} from "../dtos/permission.dto";
+import { PermissionDto } from '../dtos/permission.dto';
+import { getFirstPermission, getPermissions } from '../data/permissions.data';
 
 
 describe('PermissionController', () => {
     let appController: PermissionController;
     const date = new Date();
-    const permissions: CreatePermissionDto[] = [
-        {name: 'Permission 1', status: 'active', created: date, updated: date},
-        {name: 'Permission 2', status: 'active', created: date, updated: date},
-        {name: 'Permission 3', status: 'new', created: date, updated: date},
-    ];
+    const permissions: CreatePermissionDto[] = getPermissions();
 
     beforeEach(async () => {
         const app: TestingModule = await Test.createTestingModule({
@@ -41,7 +38,7 @@ describe('PermissionController', () => {
 
     it('should return permission', async () => {
         const data = {
-            permission: permissions[0],
+            permission: getFirstPermission(),
         };
         const param = '11111';
         const responseObj = getResponse(data);

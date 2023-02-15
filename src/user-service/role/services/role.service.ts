@@ -47,8 +47,7 @@ export class RoleService {
     async create(createRoleDto: CreateRoleDto): Promise<RoleDto>  {
         createRoleDto.created = new Date();
         createRoleDto.updated = new Date();
-        const createdRole: any = new this.roleModel(createRoleDto);
-        const role: RoleDto = await createdRole.save();
+        const role: RoleDto = await this.roleModel.create(createRoleDto);
         return await this.roleModel.findById(role._id).populate('permissions').exec();
     }
 
