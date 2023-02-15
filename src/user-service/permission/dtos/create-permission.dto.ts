@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreatePermissionDto {
@@ -11,11 +11,9 @@ export class CreatePermissionDto {
     @IsNotEmpty()
     status: string;
 
-    @IsDate()
     @Type(() => Date)
     created: Date;
 
-    @IsDate()
     @Type(() => Date)
     updated: Date;
 }

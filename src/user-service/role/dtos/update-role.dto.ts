@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PermissionDto } from '../../permission/dtos/permission.dto';
 
@@ -14,7 +14,6 @@ export class UpdateRoleDto {
 
     permissions: PermissionDto[];
 
-    @IsDate()
     @Type(() => Date)
     updated: Date;
 }

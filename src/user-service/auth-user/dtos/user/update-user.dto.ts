@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Role } from '../../../role/schemas/role.schema';
 import { Token } from '../../schemas/token.schema';
@@ -24,7 +24,6 @@ export class UpdateUserDto {
 
     socials: SocialUser[];
 
-    @IsDate()
     @Type(() => Date)
     updated: Date = new Date();
 }

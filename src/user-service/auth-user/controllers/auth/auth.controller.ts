@@ -6,7 +6,7 @@ import { JwtService } from '../../services/jwt.service';
 import { TokenService } from '../../services/token.service';
 import { CreateTokenDto } from '../../dtos/token/create-token.dto';
 import { Status } from '../../enums/statuses.enum';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../services/user/user.service';
 import { CreateSocialUserDto } from '../../dtos/social-user/create-social-user.dto';
 import { RoleService } from '../../../role/services/role.service';
 import { RolesEnum } from '../../enums/roles.enum';
