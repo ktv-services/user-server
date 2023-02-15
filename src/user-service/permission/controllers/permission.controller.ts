@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Res, Query, HttpStatus } from '@nestjs/common';
 import { PermissionService } from '../services/permission.service';
 import { CreatePermissionDto } from '../dtos/create-permission.dto';
 import { UpdatePermissionDto } from '../dtos/update-permission.dto';
@@ -9,12 +9,12 @@ export class PermissionController {
     constructor(private readonly permissionService: PermissionService) {}
 
     @Get()
-    async findAll(@Res() response): Promise<PermissionDto[]> {
+    async findAll(@Res() response, @Query() query: { active: boolean }): Promise<PermissionDto[]> {
         try {
-            const permissions: PermissionDto[] = await this.permissionService.findAll();
+            const permissions: PermissionDto[] = await this.permissionService.findAll(query.active);
             return response.status(HttpStatus.OK).json({permissions: permissions});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response?.message});
         }
     }
 
@@ -24,7 +24,7 @@ export class PermissionController {
             const permission: PermissionDto = await this.permissionService.findOne(id);
             return response.status(HttpStatus.OK).json({permission: permission});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response?.message});
         }
     }
 
@@ -32,9 +32,9 @@ export class PermissionController {
     async create(@Res() response, @Body() createPermissionDto: CreatePermissionDto): Promise<PermissionDto> {
         try {
             const permission: PermissionDto = await this.permissionService.create(createPermissionDto);
-            return response.status(HttpStatus.CREATED).json({permission: permission});
+            return response.status(HttpStatus.CREATED).json({permission: permission, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response?.message});
         }
     }
 
@@ -42,9 +42,9 @@ export class PermissionController {
     async update(@Res() response, @Param('id') id: string, @Body() updatePermissionDto: UpdatePermissionDto): Promise<PermissionDto> {
         try {
             const permission: PermissionDto = await this.permissionService.update(id, updatePermissionDto);
-            return response.status(HttpStatus.OK).json({permission: permission});
+            return response.status(HttpStatus.OK).json({permission: permission, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response?.message});
         }
     }
 
@@ -52,9 +52,9 @@ export class PermissionController {
     async remove(@Res() response, @Param('id') id: string): Promise<PermissionDto> {
         try {
             const permission: PermissionDto = await this.permissionService.delete(id);
-            return response.status(HttpStatus.OK).json({permission: permission});
+            return response.status(HttpStatus.OK).json({permission: permission, status: 'ok'});
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(err.status).json({error: err.response?.message});
         }
     }
 }

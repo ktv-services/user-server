@@ -12,12 +12,12 @@ export class RoleService {
         @InjectModel(Role.name) private roleModel: Model<RoleDocument>,
     ) {}
 
-    async findAll(): Promise<RoleDto[]>  {
+    async findAll(active: boolean = false): Promise<RoleDto[]>  {
         const roles: RoleDto[] = await this.roleModel.find().populate('permissions').exec();
         if (!roles || roles.length == 0) {
             throw new NotFoundException('Roles data not found!');
         }
-        return roles;
+        return active ? roles.filter((item: RoleDto) => item.status === 'active') : roles;
     }
 
     async findOne(id: string): Promise<RoleDto>  {
@@ -45,8 +45,9 @@ export class RoleService {
     }
 
     async create(createRoleDto: CreateRoleDto): Promise<RoleDto>  {
-        const createdRole: any = new this.roleModel(createRoleDto);
-        const role: RoleDto = await createdRole.save();
+        createRoleDto.created = new Date();
+        createRoleDto.updated = new Date();
+        const role: RoleDto = await this.roleModel.create(createRoleDto);
         return await this.roleModel.findById(role._id).populate('permissions').exec();
     }
 
@@ -55,6 +56,7 @@ export class RoleService {
         if (!role) {
             throw new NotFoundException(`Role id:${id} not found`);
         }
+        updateRoleDto.updated = new Date();
         return this.roleModel.findByIdAndUpdate(id, updateRoleDto, {new: true}).populate('permissions');
     }
 

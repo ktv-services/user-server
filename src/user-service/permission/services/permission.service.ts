@@ -12,12 +12,12 @@ export class PermissionService {
         @InjectModel(Permission.name) private permissionModel: Model<PermissionDocument>,
     ) {}
 
-    async findAll(): Promise<PermissionDto[]>  {
+    async findAll(active: boolean = false): Promise<PermissionDto[]>  {
         const permissions: PermissionDto[] = await this.permissionModel.find().exec();
         if (!permissions || permissions.length == 0) {
             throw new NotFoundException('Permissions data not found!');
         }
-        return permissions;
+        return active ? permissions.filter((item: PermissionDto) => item.status === 'active') : permissions;
     }
 
     async findOne(id: string): Promise<PermissionDto>  {
@@ -33,8 +33,9 @@ export class PermissionService {
     }
 
     async create(createPermissionDto: CreatePermissionDto): Promise<PermissionDto>  {
-        const createdPermission: any = new this.permissionModel(createPermissionDto);
-        return createdPermission.save();
+        createPermissionDto.created = new Date();
+        createPermissionDto.updated = new Date();
+        return await this.permissionModel.create(createPermissionDto);
     }
 
     async update(id: string, updatePermissionDto: UpdatePermissionDto): Promise<PermissionDto>  {
@@ -42,6 +43,7 @@ export class PermissionService {
         if (!permission) {
             throw new NotFoundException(`Permission id:${id} not found`);
         }
+        updatePermissionDto.updated = new Date();
         return this.permissionModel.findByIdAndUpdate(id, updatePermissionDto, {new: true});
     }
 
